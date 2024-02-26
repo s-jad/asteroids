@@ -1,42 +1,33 @@
-use crate::components::{Acceleration, Position, Velocity};
-use bevy::{
-    ecs::{
-        entity::Entity,
-        system::{Commands, Query},
-    },
-    log::info,
-};
+use crate::components::{Acceleration, Velocity};
+use bevy::prelude::*;
 
-pub fn spawn_spaceship(mut commands: Commands) {
-    commands.spawn((
-        Position::new(50.0, 50.0),
-        Velocity::new(1.0, 1.0),
-        Acceleration::default(),
-    ));
+const STARTING_VELOCITY: Vec3 = Vec3::new(0.0, 0.0, 1.0);
+const STARTING_ACCELERATION: Vec3 = Vec3::new(0.0, 0.0, 0.0);
+const STARTING_TRANSLATION: Vec3 = Vec3::new(0.0, 0.0, -20.0);
+
+#[derive(Bundle)]
+struct SpaceshipBundle {
+    velocity: Velocity,
+    acceleration: Acceleration,
+    model: SceneBundle,
 }
 
-pub fn update_position(mut query: Query<(&Velocity, &mut Position)>) {
-    for (vel, mut pos) in query.iter_mut() {
-        pos.x += vel.x;
-        pos.y += vel.y;
+pub struct SpaceshipPlugin;
+
+impl Plugin for SpaceshipPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Startup, spawn_spaceship);
     }
 }
 
-pub fn update_velocity(mut query: Query<(&Acceleration, &mut Velocity)>) {
-    for (acc, mut vel) in query.iter_mut() {
-        vel.x += acc.x;
-        vel.y += acc.y;
-    }
-}
-
-pub fn print_position(query: Query<(Entity, &Position)>) {
-    for (entity, pos) in query.iter() {
-        info!("Entity {:?} at position {:?}", entity, pos);
-    }
-}
-
-pub fn print_velocity(query: Query<(Entity, &Velocity)>) {
-    for (entity, vel) in query.iter() {
-        info!("Entity {:?} travelling with velocity {:?}", entity, vel);
-    }
+fn spawn_spaceship(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(SpaceshipBundle {
+        velocity: Velocity::new(STARTING_VELOCITY),
+        acceleration: Acceleration::new(STARTING_ACCELERATION),
+        model: SceneBundle {
+            scene: asset_server.load("player_spaceship.glb#Scene0"),
+            transform: Transform::from_translation(STARTING_TRANSLATION),
+            ..default()
+        },
+    });
 }
