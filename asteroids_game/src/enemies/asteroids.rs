@@ -2,7 +2,7 @@ use std::ops::Range;
 
 use bevy::{
     app::{App, Plugin, Update},
-    asset::{AssetServer, Handle},
+    asset::Handle,
     ecs::{
         component::Component,
         system::{Commands, Res, ResMut, Resource},
@@ -15,12 +15,14 @@ use bevy::{
 };
 use rand::{thread_rng, Rng};
 
-use crate::components::{Acceleration, MovingObjectBundle, Velocity};
+use crate::{
+    components::{Acceleration, MovingObjectBundle, Velocity},
+    plugins::asset_loader::SceneAssets,
+};
 
 const SPAWN_RANGE_X: Range<f32> = -25.0..25.0;
 const SPAWN_RANGE_Z: Range<f32> = 0.0..25.0;
 const VELOCITY_SCALAR: f32 = 5.0;
-const ACCELERATION_SCALAR: f32 = 1.0;
 const SPAWN_DELAY: f32 = 2.0;
 
 #[derive(Component, Debug)]
@@ -46,7 +48,7 @@ fn spawn_asteroids(
     mut commands: Commands,
     mut spawn_timer: ResMut<SpawnTimer>,
     time: Res<Time>,
-    asset_server: Res<AssetServer>,
+    asset_server: Res<SceneAssets>,
 ) {
     spawn_timer.time.tick(time.delta());
     if !spawn_timer.time.just_finished() {
@@ -66,11 +68,11 @@ fn spawn_asteroids(
     let acceleration = Vec3::ZERO;
 
     let asteroid_type: Handle<Scene> = match rng.gen_range(0..=4) {
-        0 => asset_server.load("asteroid_1.glb#Scene0"),
-        1 => asset_server.load("asteroid_2.glb#Scene0"),
-        2 => asset_server.load("asteroid_3.glb#Scene0"),
-        3 => asset_server.load("asteroid_4.glb#Scene0"),
-        _ => asset_server.load("large_asteroid_1.glb#Scene0"),
+        0 => asset_server.asteroid_1.clone(),
+        1 => asset_server.asteroid_2.clone(),
+        2 => asset_server.asteroid_3.clone(),
+        3 => asset_server.asteroid_4.clone(),
+        _ => asset_server.large_asteroid_1.clone(),
     };
 
     let rand_scale = rng.gen_range(0.75..1.25);
@@ -78,9 +80,9 @@ fn spawn_asteroids(
 
     let rotation = Quat::from_axis_angle(
         Vec3::new(
-            rng.gen_range(0.1..1.5),
-            rng.gen_range(0.1..1.5),
-            rng.gen_range(0.1..1.5),
+            rng.gen_range(0.3..1.2),
+            rng.gen_range(0.3..1.2),
+            rng.gen_range(0.3..1.2),
         ),
         10.0,
     );
