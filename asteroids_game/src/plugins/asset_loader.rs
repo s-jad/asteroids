@@ -14,7 +14,7 @@ pub struct SceneAssets {
     pub asteroid_3: Handle<Scene>,
     pub large_asteroid_1: Handle<Scene>,
     pub player_spaceship: Handle<Scene>,
-    pub missiles: Handle<Scene>,
+    pub missile: Handle<Scene>,
 }
 
 pub struct AssetLoaderPlugin;
@@ -34,6 +34,6 @@ fn load_assets(mut scene_assets: ResMut<SceneAssets>, asset_server: Res<AssetSer
         asteroid_4: asset_server.load("asteroid_4.glb#Scene0"),
         large_asteroid_1: asset_server.load("large_asteroid_1.glb#Scene0"),
         player_spaceship: asset_server.load("player_spaceship.glb#Scene0"),
-        missiles: asset_server.load("asteroid_1.glb#Scene0"),
+        missile: asset_server.load("missile_1.glb#Scene0"),
     };
 }
