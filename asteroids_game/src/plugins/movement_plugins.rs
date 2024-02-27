@@ -17,16 +17,12 @@ impl Plugin for MovementPlugin {
 
 fn update_position(mut query: Query<(&Velocity, &mut Transform)>, time: Res<Time>) {
     for (vel, mut transform) in query.iter_mut() {
-        transform.translation.x += vel.val.x * time.delta_seconds();
-        transform.translation.y += vel.val.y * time.delta_seconds();
-        transform.translation.z += vel.val.z * time.delta_seconds();
+        transform.translation += vel.val * time.delta_seconds();
     }
 }
 
 fn update_velocity(mut query: Query<(&Acceleration, &mut Velocity)>, time: Res<Time>) {
     for (acc, mut vel) in query.iter_mut() {
-        vel.val.x += acc.val.x * time.delta_seconds();
-        vel.val.y += acc.val.y * time.delta_seconds();
-        vel.val.z += acc.val.z * time.delta_seconds();
+        vel.val += acc.val * time.delta_seconds();
     }
 }
