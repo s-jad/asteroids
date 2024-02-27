@@ -9,12 +9,13 @@ use bevy::{app::App, DefaultPlugins};
 use camera::CameraPlugin;
 use enemies::EnemyPlugin;
 use player::SpaceshipPlugin;
-use plugins::{DebugPlugin, LightingPlugin, MovementPlugin};
+use plugins::{AssetLoaderPlugin, DebugPlugin, LightingPlugin, MovementPlugin};
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         // User configured plugins
+        .add_plugins(AssetLoaderPlugin)
         .add_plugins(LightingPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(SpaceshipPlugin)
